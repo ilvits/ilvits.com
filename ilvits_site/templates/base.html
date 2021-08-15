@@ -26,38 +26,44 @@
           src="https://unpkg.com/alpinejs@3.2.3/dist/cdn.min.js"
   ></script>
 </head>
-<body class="font-sans font-extralight text-gray-700 ">
-<div class="w-full h-11 md:h-14 text-gray-700 bg-white border-b border-gray-100 sticky content-center top-0 z-50 backdrop-filter backdrop-blur-lg bg-opacity-30">
+<body class="font-sans font-extralight text-gray-700 bg-top bg-cover" style="background-image: url(/media/bg.jpg)">
+<div class="w-full h-11 md:h-14 text-gray-700 bg-white sticky content-center top-0 z-50 backdrop-filter backdrop-blur-lg bg-opacity-30">
   <div x-data="{ open: false }"
        class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
     <div class="p-2 md:p-4 flex flex-row items-center justify-between">
-      <a href="{% url 'homepage' %}" class="text-lg font-semibold tracking-widest text-gray-900">
+      <a href="{% url 'homepage' %}" class="text-white  text-lg font-semibold tracking-widest">
         ILViTs</a>
       <button class="md:hidden rounded-lg focus:outline-none focus:shadow-outline" @click="open = !open">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="white">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
     </div>
     <nav x-transition :class="{'flex': open, 'hidden': !open}"
          class="w-64 absolute md:static right-0 top-11 rounded border-l border border-b border-gray-50 md:border-none md:shadow-none font-light flex-col flex-grow text-right pb-2 md:pb-0 hidden md:flex md:justify-end md:flex-row bg-white backdrop-filter backdrop-blur-lg md:backdrop-blur-0 bg-opacity-40 md:bg-opacity-0">
-      <a class="mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
+      <a class="text-white mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
          href="{% url 'homepage' %}">Main</a>
-      <a class="mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
-         href="#">Portfolio</a>
-      <a class="mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
-         href="#">Contact</a>
+      <a class="text-white mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
+         href="{% url 'portfolio' %}">Portfolio</a>
+      <a class="text-white mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
+         href="{% url 'contact' %}">Contact</a>
       {% if user.is_authenticated %}
         {% if user.socialaccount_set.all.0.get_avatar_url %}
           <a class="flex md:hidden mx-2 md:mx-0 px-4 py-2 mt-2" href="{% url 'accounts:user_profile' %}">
-            <img class="rounded-full flex h-7 w-7 ml-24 mr-2 object-cover"
+            <img class="rounded-full flex h-7 w-7 ml-24 mr-2 border border-gray-300 object-cover"
                  src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="">
+            <div>Профиль</div>
+          </a>
+        {% elif user.profile.profile_picture %}
+          <a class="flex md:hidden mx-2 md:mx-0 px-4 py-2 mt-2" href="{% url 'accounts:user_profile' %}">
+            <img class="rounded-full flex h-7 w-7 ml-24 mr-2 border border-gray-300 object-cover"
+                 src="{{ user.profile.profile_picture.url }}" alt="">
             <div>Профиль</div>
           </a>
         {% else %}
           <a class="md:hidden mx-2 md:mx-0 px-4 py-2 mt-2" href="{% url 'accounts:user_profile' %}">
             <svg class="flex h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor">
+                 stroke="white">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                     d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
@@ -67,14 +73,14 @@
       {% else %}
         <a class="md:hidden mx-2 md:mx-0 px-4 py-2 mt-2 text-md" href="{% url 'accounts:login' %}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-               style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;">
+               style="fill: rgb(255,255,255);transform: ;msFilter:;">
             <path d="m10.998 16 5-4-5-4v3h-9v2h9z"></path>
             <path d="M12.999 2.999a8.938 8.938 0 0 0-6.364 2.637L8.049 7.05c1.322-1.322 3.08-2.051 4.95-2.051s3.628.729 4.95 2.051S20 10.13 20 12s-.729 3.628-2.051 4.95-3.08 2.051-4.95 2.051-3.628-.729-4.95-2.051l-1.414 1.414c1.699 1.7 3.959 2.637 6.364 2.637s4.665-.937 6.364-2.637C21.063 16.665 22 14.405 22 12s-.937-4.665-2.637-6.364a8.938 8.938 0 0 0-6.364-2.637z"></path>
           </svg>
         </a>
       {% endif %}
     </nav>
-    <a class="hidden md:inline-flex pl-4 text-sm text-gray-500 md:mt-0 md:ml-4 z-40"
+    <a class="hidden md:inline-flex pl-4 text-sm text-white md:mt-0 md:ml-4 z-40"
        href="">
       {% with total_items=cart|length %}
         {% if cart|length > 0 %}
@@ -84,7 +90,7 @@
       {% endwith %}
     </a>
     <a class="hidden md:inline-flex pl-1" href="#">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="white">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
               d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
       </svg>
@@ -92,7 +98,13 @@
     {% if user.is_authenticated %}
       {% if user.socialaccount_set.all.0.get_avatar_url %}
         <a class="hidden md:inline-flex pl-1 pb-0 pl-4" href="{% url 'accounts:user_profile' %}">
-          <img class="rounded-full h-7 w-7 object-cover" src="{{ user.socialaccount_set.all.0.get_avatar_url }}">
+          <img class="rounded-full h-7 w-7 border border-gray-300 object-cover"
+               src="{{ user.socialaccount_set.all.0.get_avatar_url }}">
+        </a>
+      {% elif user.profile.profile_picture %}
+        <a class="hidden md:inline-flex pl-1 pb-0 pl-4" href="{% url 'accounts:user_profile' %}">
+          <img class="rounded-full h-7 w-7 border border-gray-300 object-cover"
+               src="{{ user.profile.profile_picture.url }}">
         </a>
       {% else %}
         <a class="hidden md:inline-flex pl-1 pb-0 pl-4" href="{% url 'accounts:user_profile' %}">
