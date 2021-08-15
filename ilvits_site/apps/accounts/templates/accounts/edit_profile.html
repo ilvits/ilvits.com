@@ -1,0 +1,56 @@
+{% extends "accounts/profile_base.html" %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block content %}
+    <div class="min-h-screen flex flex-row items-start">
+    {{ block.super }}
+<div class="w-4/6 p-4 bg-white rounded-lg shadow-lg border-t border-gray-50 md:max-w-sm mx-auto m-8">
+<form method="post" enctype="multipart/form-data" >
+  {% csrf_token %}
+ {% for field in user_form %}
+                <div class="mb-5 mt-4 w-sm">
+                    <label for="{{ field.id_for_label }}" class="block mb-2 font-normal text-gray-600">
+                        {{ field.label }}
+                    </label>
+                    {%  render_field field|add_class:"border border-gray-200 p-3 w-full rounded mb-" placeholder=field.label %}
+                    {% for error in field.errors %}
+                        <span class="text-sm text-red-400 mt-8">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
+            {% for field in profile_form %}
+                <div class="mb-5 mt-4">
+                    <label for="{{ field.id_for_label }}" class="block mb-2 font-normal text-gray-600">
+                        {{ field.label }}
+                    </label>
+                    {%  render_field field|add_class:"border border-gray-200 p-3 w-full rounded mb-" placeholder=field.label %}
+                    {% for error in field.errors %}
+                        <span class="text-sm text-red-400 mt-8">{{ error }}</span>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+  <button class="block w-full bg-white text-gray-800 font-bold p-4 rounded-lg shadow-md"' type="submit">Сохранить</button>
+</form>
+{% if form.errors %}
+                    <div class="text-sm text-red-400 text-center mb-6">
+                    <p>ошибка формы</p>
+{{ form.errors.as_data }}
+
+
+{% for error in form.errors %}
+{{ error.data }} <br>
+{% endfor %}
+                    </div>
+                {% endif %}
+
+</div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+  <div class="w-16 my-8 mt-8 mx-auto">
+    <img class="w-16 h-16" src="/media/logo.svg">
+  </div>
+  <div class="w-5/6 bg-white rounded-lg shadow-lg border-t border-gray-50 md:max-w-sm mx-auto mb-8">
+
+    <h1 class="border-b py-6 font-bold text-black text-center text-xl tracking-widest uppercase">Create Account</h1>
+    <form class="bg-gray-50 px-10 py-10" action="." method="post">
+      {% csrf_token %}
+      {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+
+      {% for field in form %}
+        <div class="mb-5 -mt-4">
+          <label for="{{ field.id_for_label }}" class="block mb-2 font-normal text-gray-600">
+            {{ field.label }}
+          </label>
+          {% render_field field|add_class:"border border-gray-200 p-3 w-full rounded mb-" placeholder=field.label %}
+          {% for error in field.errors %}
+            <span class="text-sm text-red-400 mt-8">{{ error }}</span>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <button class="block w-full bg-white text-gray-800 font-bold p-4 rounded-lg shadow-md">
+        Зарегистрироваться
+      </button>
+    </form>
+    <div class="border-t px-6 py-4">
+      <div class="flex justify-between">
+        <a href="{% url 'accounts:login' %}" class="font-bold text-gray-700 hover:text-black no-underline">Sign In</a>
+        <a href="{% url 'accounts:password_reset' %}" class="text-gray-700 hover:text-black no-underline">Forgot password?</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-center mx-auto">
+    <a href="{% provider_login_url 'google' %}" class="text-dark"><img
+            src="/media/btn_google_signin_light_normal_web@2x.png" style="width:14rem; height:auto"></a>
+  </div>
+{% endblock content %}

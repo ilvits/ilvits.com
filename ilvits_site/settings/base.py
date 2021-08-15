@@ -3,6 +3,8 @@ from pathlib import Path
 import dj_database_url
 from decouple import Csv, config
 
+SITE_ID = 1
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ==============================================================================
@@ -15,7 +17,10 @@ DEBUG = config("DEBUG", default=True, cast=bool)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost", cast=Csv())
 
+LOGOUT_REDIRECT_URL = 'accounts:login'
+
 INSTALLED_APPS = [
+    'django.contrib.sites',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -23,6 +28,19 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    # 3rd party
+    'widget_tweaks',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    # social providers
+    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount.providers.telegram',
+    'allauth.socialaccount.providers.vk',
+    # 'allauth.socialaccount.providers.yandex',
+
+    # My apps
     "ilvits_site.apps.accounts",
 ]
 
@@ -68,13 +86,47 @@ TEMPLATES = [
     },
 ]
 
+
+# ==============================================================================
+# AUTHENTICATION SETTINGS
+# ==============================================================================
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 60
+
+ACCOUNT_ADAPTER = 'ilvits_site.apps.accounts.adapter.MyAccountAdapter'
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+
 # ==============================================================================
 # DATABASES SETTINGS
 # ==============================================================================
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=config("DATABASE_URL", default="postgres://ilvits_site:ilvits_site@localhost:5432/ilvits_site"),
+        default=config("DATABASE_URL", default="postgres://ilvits:ilvits@localhost:5432/ilvits_site"),
         conn_max_age=600,
     )
 }
@@ -102,9 +154,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # I18N AND L10N SETTINGS
 # ==============================================================================
 
-LANGUAGE_CODE = config("LANGUAGE_CODE", default="en-us")
+LANGUAGE_CODE = config("LANGUAGE_CODE", default="en-en")
 
-TIME_ZONE = config("TIME_ZONE", default="UTC")
+TIME_ZONE = config("TIME_ZONE", default="Europe/Moscow")
 
 USE_I18N = True
 

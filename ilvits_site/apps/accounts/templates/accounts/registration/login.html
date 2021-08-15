@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load static %}
+{% load socialaccount %}
+
+{% block content %}
+  <div class="flex-col justify-center w-full">
+    {% if user.is_authenticated %}
+      <div class="text-center my-16 mx-16">You already in.<br>
+        <a class="text-gray-500 hover:text-black font-bold " href="{% url 'accounts:logout' %}">Logout</a>
+      </div>
+    {% else %}
+      <div class="flex w-full my-8 mt-8 mx-auto">
+        <img class="w-16 h-16" src="/media/logo.svg">
+      </div>
+      <div class="flex-col w-5/6 bg-white rounded-lg shadow-lg border-t border-gray-50 md:max-w-sm mx-auto">
+
+        <div class="border-b py-6 font-bold text-black text-center text-xl tracking-widest uppercase">
+          Welcome Back!
+        </div>
+        <div class="flex justify-center align-items-center">
+          <div class="flex align-items-center">
+            <a href="{% provider_login_url 'google' %}"><img class="w-16 px-2"
+                                                             src="/media/btn_google_light_normal_ios.svg"></a>
+          </div>
+          <div class="flex align-items-center">
+            <a href="{% provider_login_url 'vk' method="oauth2" %}"><img class="w-14 pt-1 px-2"
+                                                                         src="/media/VK_Compact_Logo.svg"></a>
+          </div>
+{#          <div class="flex align-items-center">#}
+{#            <a href="{% provider_login_url 'yandex' method="oauth2" %}">Yandex</a>#}
+{#          </div>#}
+
+        </div>
+        <form class="bg-gray-50 px-10 py-10" method="post" action="{% url 'accounts:login' %}">
+
+          {% csrf_token %}
+          <div class="mb-3">
+            {% render_field form.username|add_class:"border border-gray-200 p-3 w-full rounded mb-" placeholder='Username' %}
+          </div>
+          <div class="mb-6">
+            {% render_field form.password|add_class:"border border-gray-200 p-3 w-full rounded mb-" placeholder='**************' %}
+          </div>
+          {% if form.errors %}
+            <div class="text-sm text-red-400 text-center mb-6">
+              <p>Имя пользователя или пароль неверны. Попробуйте еще раз.</p>
+            </div>
+          {% endif %}
+          <div class="flex">
+            <button type="submit"
+                    class="bg-white border-t border-gray-100 hover:bg-gray-100 w-full p-4 text-sm text-black uppercase font-bold tracking-wider shadow-md rounded-lg">
+              Sign In
+            </button>
+          </div>
+          <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        <div class="border-t px-6 py-4">
+          <div class="flex justify-between">
+            <a href="{% url 'accounts:signup' %}" class="font-bold text-gray-700 hover:text-black no-underline">Create account?</a>
+            <a href="{% url 'accounts:password_reset' %}" class="text-gray-700 hover:text-black no-underline">Forgot password?</a>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

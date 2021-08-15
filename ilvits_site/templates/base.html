@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ILViTs Site{% endblock %}</title>
+  <link
+          rel="stylesheet"
+          href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+  />
+  <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+          rel="stylesheet"
+          href="{% static 'css/main.css' %}"
+  />
+  <link
+          rel="stylesheet"
+          href="https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css"
+  />
+  <script
+          defer
+          src="https://unpkg.com/alpinejs@3.2.3/dist/cdn.min.js"
+  ></script>
+</head>
+<body class="font-sans font-extralight text-gray-700 ">
+<div class="w-full h-11 md:h-14 text-gray-700 bg-white border-b border-gray-100 sticky content-center top-0 z-50 backdrop-filter backdrop-blur-lg bg-opacity-30">
+  <div x-data="{ open: false }"
+       class="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
+    <div class="p-2 md:p-4 flex flex-row items-center justify-between">
+      <a href="{% url 'homepage' %}" class="text-lg font-semibold tracking-widest text-gray-900">
+        ILViTs</a>
+      <button class="md:hidden rounded-lg focus:outline-none focus:shadow-outline" @click="open = !open">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+    <nav x-transition :class="{'flex': open, 'hidden': !open}"
+         class="w-64 absolute md:static right-0 top-11 rounded border-l border border-b border-gray-50 md:border-none md:shadow-none font-light flex-col flex-grow text-right pb-2 md:pb-0 hidden md:flex md:justify-end md:flex-row bg-white backdrop-filter backdrop-blur-lg md:backdrop-blur-0 bg-opacity-40 md:bg-opacity-0">
+      <a class="mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
+         href="{% url 'homepage' %}">Main</a>
+      <a class="mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
+         href="#">Portfolio</a>
+      <a class="mx-2 md:mx-0 px-4 py-2 mt-2 text-md rounded-lg md:mt-0 md:ml-4"
+         href="#">Contact</a>
+      {% if user.is_authenticated %}
+        {% if user.socialaccount_set.all.0.get_avatar_url %}
+          <a class="flex md:hidden mx-2 md:mx-0 px-4 py-2 mt-2" href="{% url 'accounts:user_profile' %}">
+            <img class="rounded-full flex h-7 w-7 ml-24 mr-2 object-cover"
+                 src="{{ user.socialaccount_set.all.0.get_avatar_url }}" alt="">
+            <div>Профиль</div>
+          </a>
+        {% else %}
+          <a class="md:hidden mx-2 md:mx-0 px-4 py-2 mt-2" href="{% url 'accounts:user_profile' %}">
+            <svg class="flex h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                    d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </a>
+        {% endif %}
+
+      {% else %}
+        <a class="md:hidden mx-2 md:mx-0 px-4 py-2 mt-2 text-md" href="{% url 'accounts:login' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+               style="fill: rgba(0, 0, 0, 1);transform: ;msFilter:;">
+            <path d="m10.998 16 5-4-5-4v3h-9v2h9z"></path>
+            <path d="M12.999 2.999a8.938 8.938 0 0 0-6.364 2.637L8.049 7.05c1.322-1.322 3.08-2.051 4.95-2.051s3.628.729 4.95 2.051S20 10.13 20 12s-.729 3.628-2.051 4.95-3.08 2.051-4.95 2.051-3.628-.729-4.95-2.051l-1.414 1.414c1.699 1.7 3.959 2.637 6.364 2.637s4.665-.937 6.364-2.637C21.063 16.665 22 14.405 22 12s-.937-4.665-2.637-6.364a8.938 8.938 0 0 0-6.364-2.637z"></path>
+          </svg>
+        </a>
+      {% endif %}
+    </nav>
+    <a class="hidden md:inline-flex pl-4 text-sm text-gray-500 md:mt-0 md:ml-4 z-40"
+       href="">
+      {% with total_items=cart|length %}
+        {% if cart|length > 0 %}
+          {{ total_items }} шт.
+          <span class="font-normal z-40">({{ cart.get_total_price }}₽)</span>
+        {% endif %}
+      {% endwith %}
+    </a>
+    <a class="hidden md:inline-flex pl-1" href="#">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+      </svg>
+    </a>
+    {% if user.is_authenticated %}
+      {% if user.socialaccount_set.all.0.get_avatar_url %}
+        <a class="hidden md:inline-flex pl-1 pb-0 pl-4" href="{% url 'accounts:user_profile' %}">
+          <img class="rounded-full h-7 w-7 object-cover" src="{{ user.socialaccount_set.all.0.get_avatar_url }}">
+        </a>
+      {% else %}
+        <a class="hidden md:inline-flex pl-1 pb-0 pl-4" href="{% url 'accounts:user_profile' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                  d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </a>
+      {% endif %}
+
+    {% else %}
+      <a class="hidden md:inline-flex pl-1 pb-0 pl-4" href="{% url 'accounts:login' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+        </svg>
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+
+<div class="container flex-col mx-auto">
+  {% if messages %}
+    <ul class="messages w-96 mx-auto mt-4">
+      {% for message in messages %}
+        <div class="bg-teal-100 border-t-4 border-teal-500 rounded-b text-teal-900 px-4 py-3 shadow-md" role="alert">
+          <div class="flex">
+            <div class="py-1">
+              <svg class="fill-current h-6 w-6 text-teal-500 mr-4" xmlns="http://www.w3.org/2000/svg"
+                   viewBox="0 0 20 20">
+                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"></path>
+              </svg>
+            </div>
+            <div>
+              <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  {% block content %}
+  {% endblock %}
+</div>
+</body>
+</html>
